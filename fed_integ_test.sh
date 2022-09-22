@@ -7,41 +7,61 @@ GREEN='\033[0;32m'
 BLACK='\033[0m'
 
 
-Magma_repo () {
+while getopts r:b: flag
+do
+    case "${flag}" in
+        r) repo=${OPTARG};;
+        b) branch=${OPTARG};;
+    esac
+done
+
+Help()
+{
+   echo "Add description of the script functions here."
+   echo
+   echo "Syntax: scriptTemplate [-r|b]"
+   echo "options:"
+   echo "r     Give the Repo on which you want to work."
+   echo "b     Give the Brannch Name."
+   echo
+}
+
+while getopts ":h" option; do
+   case $option in
+      h) # display Help
+         Help
+         exit;;
+   esac
+done
+
+Clone_Magma () {
+
 echo -e ${GREEN}#########################################
 echo -e ${GREEN}#    **MAGMA REPO**                 
 echo -e ${GREEN}#########################################${BLACK}
-}
 
-
-Clone_Magma () {
   DIR="$HOME/workspace-1/magma"
   if [ -d "$DIR" ]; then
     echo "Directory Exists ${DIR}"
   else
     mkdir workspace-1 && cd workspace-1
     sudo rm -rf magma
-    echo "Give Repo Link"
-    read Repo
-    git clone $Repo
+    git clone $repo
   fi
 }
 
 Magma_Branch () {
   cd magma
-  echo "Give Branch Name"
-  read Branch
-  git checkout $Branch
+  git checkout $branch
   export MAGMA_ROOT=$HOME/workspace-1/magma
 }
 
-Pre_requisite () {
+Install_prerequisites () {
+
 echo -e ${GREEN}#########################################
 echo -e ${GREEN}#    *Pre-requisites**
 echo -e ${GREEN}#########################################${BLACK}
-}
 
-Install_prerequisites () {
   sudo curl -O https://releases.hashicorp.com/vagrant/2.2.19/vagrant_2.2.19_x86_64.deb
   sudo apt update
   sudo apt install ./vagrant_2.2.19_x86_64.deb
@@ -130,14 +150,12 @@ Load_Docker_Images (){
   mkdir -p /tmp/fed_integ_test-images
 }
 
-Fed_Integ () {
+Fed_Integ_Test () {
+
 echo -e ${GREEN}#########################################
 echo -e ${GREEN}#    **FED INTEG TEST**                 
 echo -e ${GREEN}#########################################${BLACK}
-}
 
-Fed_Integ_Test () {
-  cd
   cd $MAGMA_ROOT/lte/gateway
   export MAGMA_DEV_CPUS=3
   export MAGMA_DEV_MEMORY_MB=9216
@@ -145,10 +163,8 @@ Fed_Integ_Test () {
 }
 
 
-Magma_repo
 Clone_Magma
 Magma_Branch
-Pre_requisite
 Install_prerequisites
 Open_network_interfaces
 Orc8r_build
@@ -158,5 +174,4 @@ Vagrant_host_prerequisites
 Build_test_vms
 Build_agw
 Load_Docker_Images
-Fed_Integ
 Fed_Integ_Test
