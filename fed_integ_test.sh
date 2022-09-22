@@ -7,32 +7,41 @@ GREEN='\033[0;32m'
 BLACK='\033[0m'
 
 
-while getopts r:b: flag
-do
-    case "${flag}" in
-        r) repo=${OPTARG};;
-        b) branch=${OPTARG};;
-    esac
-done
+# while getopts r:b: flag
+# do
+#     case "${flag}" in
+#         r) repo=${OPTARG};;
+#         b) branch=${OPTARG};;
+#           exit;;
+#     esac
+# done
 
-Help()
-{
-   echo "Add description of the script functions here."
-   echo
-   echo "Syntax: scriptTemplate [-r|b]"
-   echo "options:"
-   echo "r     Give the Repo on which you want to work."
-   echo "b     Give the Brannch Name."
-   echo
-}
+# while getopts ":h" option; do
+#    case $option in
+#       h) # display Help
+#          Help
+#          exit;;
+#    esac
+# done
 
-while getopts ":h" option; do
-   case $option in
-      h) # display Help
-         Help
-         exit;;
-   esac
-done
+# Help()
+# {
+#    echo "Add description of the script functions here."
+#    echo
+#    echo "Syntax: scriptTemplate [-r|b]"
+#    echo "options:"
+#    echo "r     Give the Repo on which you want to work."
+#    echo "b     Give the Branch Name."
+#    echo
+# }
+
+# while getopts ":h" option; do
+#    case $option in
+#       h) # display Help
+#          Help
+#          exit;;
+#    esac
+# done
 
 Clone_Magma () {
 
@@ -44,11 +53,20 @@ echo -e ${GREEN}#########################################${BLACK}
   if [ -d "$DIR" ]; then
     echo "Directory Exists ${DIR}"
   else
-    mkdir workspace-1 && cd workspace-1
+    mkdir $HOME/workspace-1 && cd $HOME/workspace-1
     sudo rm -rf magma
     git clone $repo
   fi
+
 }
+
+# while getopts r:b: flag
+# do
+#     case "${flag}" in
+#         r) repo=${OPTARG};;
+#         b) branch=${OPTARG};;
+#     esac
+# done
 
 Magma_Branch () {
   cd magma
@@ -56,7 +74,7 @@ Magma_Branch () {
   export MAGMA_ROOT=$HOME/workspace-1/magma
 }
 
-Install_prerequisites () {
+prerequisites() {
 
 echo -e ${GREEN}#########################################
 echo -e ${GREEN}#    *Pre-requisites**
@@ -79,6 +97,63 @@ Open_network_interfaces () {
   sudo sh -c "echo '* 192.168.0.0/16' > /etc/vbox/networks.conf"
   sudo sh -c "echo '* 3001::/64' >> /etc/vbox/networks.conf"
 }
+
+help()
+{
+   # Display Help
+   echo "Add description of the script functions here."
+   echo
+   echo "Syntax: scriptTemplate [-r|b]"
+   echo "options:"
+   echo "r     Clone the repo."
+   echo "h     For help."
+   echo
+}
+
+SHORT=r:,b
+LONG=help
+OPTS=$(getopt -a -n magma --options $SHORT --longoptions $LONG -- "$@")
+
+# VALID_ARGUMENTS=$# # Returns the count of arguments that are in short or long options
+
+# if [ $# -eq 0 ]; then
+#   echo "Hi"
+# fi
+
+if [[ $# -eq 0 ]] ; then
+    echo 'Use "-h or --h flag"'
+    exit 1
+fi
+
+
+
+eval set -- "$OPTS"
+
+while :
+do
+  case "$1" in
+    -r | --repo )
+      repo="$2"
+      shift 2
+      ;;
+    -b | --branch )
+      branch="$2"
+      shift 2
+      ;;
+    -h | --help)
+      help
+      exit
+      ;;
+    --)
+      shift;
+      break
+      ;;
+    *)
+      echo "Unexpected option: $1"
+      help
+      ;;
+  esac
+done
 
 Orc8r_build () {
   cd
@@ -165,8 +240,8 @@ echo -e ${GREEN}#########################################${BLACK}
 
 Clone_Magma
 Magma_Branch
-Install_prerequisites
-Open_network_interfaces
+#Install_prerequisites
+#Open_network_interfaces
 Orc8r_build
 Save_Images
 Build_feg
