@@ -6,43 +6,6 @@ RED='\033[0;31m'
 GREEN='\033[0;32m'
 BLACK='\033[0m'
 
-
-# while getopts r:b: flag
-# do
-#     case "${flag}" in
-#         r) repo=${OPTARG};;
-#         b) branch=${OPTARG};;
-#           exit;;
-#     esac
-# done
-
-# while getopts ":h" option; do
-#    case $option in
-#       h) # display Help
-#          Help
-#          exit;;
-#    esac
-# done
-
-# Help()
-# {
-#    echo "Add description of the script functions here."
-#    echo
-#    echo "Syntax: scriptTemplate [-r|b]"
-#    echo "options:"
-#    echo "r     Give the Repo on which you want to work."
-#    echo "b     Give the Branch Name."
-#    echo
-# }
-
-# while getopts ":h" option; do
-#    case $option in
-#       h) # display Help
-#          Help
-#          exit;;
-#    esac
-# done
-
 Clone_Magma () {
 
 echo -e ${GREEN}#########################################
@@ -59,14 +22,6 @@ echo -e ${GREEN}#########################################${BLACK}
   fi
 
 }
-
-# while getopts r:b: flag
-# do
-#     case "${flag}" in
-#         r) repo=${OPTARG};;
-#         b) branch=${OPTARG};;
-#     esac
-# done
 
 Magma_Branch () {
   cd magma
@@ -114,18 +69,10 @@ SHORT=r:,b
 LONG=help
 OPTS=$(getopt -a -n magma --options $SHORT --longoptions $LONG -- "$@")
 
-# VALID_ARGUMENTS=$# # Returns the count of arguments that are in short or long options
-
-# if [ $# -eq 0 ]; then
-#   echo "Hi"
-# fi
-
 if [[ $# -eq 0 ]] ; then
     echo 'Use "-h or --h flag"'
     exit 1
 fi
-
-
 
 eval set -- "$OPTS"
 
@@ -240,8 +187,8 @@ echo -e ${GREEN}#########################################${BLACK}
 
 Clone_Magma
 Magma_Branch
-#Install_prerequisites
-#Open_network_interfaces
+Install_prerequisites
+Open_network_interfaces
 Orc8r_build
 Save_Images
 Build_feg
